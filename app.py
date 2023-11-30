@@ -1,11 +1,11 @@
-from urllib import request
-from altair import repeat
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from math import sqrt
+import urllib.parse
+import pickle
 
 app = Flask(__name__)
 
@@ -45,6 +45,20 @@ def predict_comments():
     derived_27 = float(request.args.get('derived_27'))
     derived_28 = float(request.args.get('derived_28'))
     derived_29 = float(request.args.get('derived_29'))
+    post_published_weekday_1 = float(request.args.get('post_published_weekday_1'))
+    post_published_weekday_2 = float(request.args.get('post_published_weekday_2'))
+    post_published_weekday_3 = float(request.args.get('post_published_weekday_3'))
+    post_published_weekday_4 = float(request.args.get('post_published_weekday_4'))
+    post_published_weekday_5 = float(request.args.get('post_published_weekday_5'))
+    post_published_weekday_6 = float(request.args.get('post_published_weekday_6'))
+    post_published_weekday_7 = float(request.args.get('post_published_weekday_7'))
+    base_datetime_weekday_1 = float(request.args.get('base_datetime_weekday_1'))
+    base_datetime_weekday_2 = float(request.args.get('base_datetime_weekday_2'))
+    base_datetime_weekday_3 = float(request.args.get('base_datetime_weekday_3'))
+    base_datetime_weekday_4 = float(request.args.get('base_datetime_weekday_4'))
+    base_datetime_weekday_5 = float(request.args.get('base_datetime_weekday_5'))
+    base_datetime_weekday_6 = float(request.args.get('base_datetime_weekday_6'))
+    base_datetime_weekday_7 = float(request.args.get('base_datetime_weekday_7'))
     cc1 = float(request.args.get('cc1'))
     cc2 = float(request.args.get('cc2'))
     cc3 = float(request.args.get('cc3'))
@@ -86,39 +100,153 @@ def predict_comments():
         'Derived_27': [derived_27],
         'Derived_28': [derived_28],
         'Derived_29': [derived_29],
+        'Post published weekday_1': [post_published_weekday_1],
+        'Post published weekday_2': [post_published_weekday_2],
+        'Post published weekday_3': [post_published_weekday_3],
+        'Post published weekday_4': [post_published_weekday_4],
+        'Post published weekday_5': [post_published_weekday_5],
+        'Post published weekday_6': [post_published_weekday_6],
+        'Post published weekday_7': [post_published_weekday_7],
+        'Base DateTime weekday_1': [base_datetime_weekday_1],
+        'Base DateTime weekday_2': [base_datetime_weekday_2],
+        'Base DateTime weekday_3': [base_datetime_weekday_3],
+        'Base DateTime weekday_4': [base_datetime_weekday_4],
+        'Base DateTime weekday_5': [base_datetime_weekday_5],
+        'Base DateTime weekday_6': [base_datetime_weekday_6],
+        'Base DateTime weekday_7': [base_datetime_weekday_7],
         'CC1': [cc1],
         'CC2': [cc2],
         'CC3': [cc3],
         'CC4': [cc4],
         'CC5': [cc5],
         'Base time': [base_time],
-        'Post Length': [post_length],
+        'Post length': [post_length],
         'Post Share Count': [post_share_count],
         'Post Promotion Status': [post_promotion_status],
         'H Local': [h_local]
     }
     df = pd.DataFrame(data)
+    print(df.head())
+    print("Preprocessing the data...")
+    # Preprocess the data
+    df = preprocessor.transform(df)
 
-    model = LinearRegression()
-    model.load_model("chemin_vers_le_modele_entrene.pkl")  # Remplacez par le chemin vers votre modèle pré-entraîné
-
+    print("Making predictions...")
     prediction = model.predict(df)[0]
 
     response = {'prediction': prediction}
+    print(f"Prediction: {prediction}")
     return jsonify(response)
+
+def generate_prediction_url(row, base_url="http://127.0.0.1:5000/api/predictions"):
+
+    # Replace column names by the endpoint parameter names
+
+    mapping = {
+        'Page Popularity/likes': 'page_likes',
+        'Page Checkins': 'page_checkins',
+        'Page talking about': 'page_talking_about',
+        'Page Category': 'page_category',
+        'Derived_5': 'derived_5',
+        'Derived_6': 'derived_6',
+        'Derived_7': 'derived_7',
+        'Derived_8': 'derived_8',
+        'Derived_9': 'derived_9',
+        'Derived_10': 'derived_10',
+        'Derived_11': 'derived_11',
+        'Derived_12': 'derived_12',
+        'Derived_13': 'derived_13',
+        'Derived_14': 'derived_14',
+        'Derived_15': 'derived_15',
+        'Derived_16': 'derived_16',
+        'Derived_17': 'derived_17',
+        'Derived_18': 'derived_18',
+        'Derived_19': 'derived_19',
+        'Derived_20': 'derived_20',
+        'Derived_21': 'derived_21',
+        'Derived_22': 'derived_22',
+        'Derived_23': 'derived_23',
+        'Derived_24': 'derived_24',
+        'Derived_25': 'derived_25',
+        'Derived_26': 'derived_26',
+        'Derived_27': 'derived_27',
+        'Derived_28': 'derived_28',
+        'Derived_29': 'derived_29',
+        'Post published weekday_1': 'post_published_weekday_1',
+        'Post published weekday_2': 'post_published_weekday_2',
+        'Post published weekday_3': 'post_published_weekday_3',
+        'Post published weekday_4': 'post_published_weekday_4',
+        'Post published weekday_5': 'post_published_weekday_5',
+        'Post published weekday_6': 'post_published_weekday_6',
+        'Post published weekday_7': 'post_published_weekday_7',
+        'Base DateTime weekday_1': 'base_datetime_weekday_1',
+        'Base DateTime weekday_2': 'base_datetime_weekday_2',
+        'Base DateTime weekday_3': 'base_datetime_weekday_3',
+        'Base DateTime weekday_4': 'base_datetime_weekday_4',
+        'Base DateTime weekday_5': 'base_datetime_weekday_5',
+        'Base DateTime weekday_6': 'base_datetime_weekday_6',
+        'Base DateTime weekday_7': 'base_datetime_weekday_7',
+        'CC1': 'cc1',
+        'CC2': 'cc2',
+        'CC3': 'cc3',
+        'CC4': 'cc4',
+        'CC5': 'cc5',
+        'Base time': 'base_time',
+        'Post length': 'post_length',
+        'Post Share Count': 'post_share_count',
+        'Post Promotion Status': 'post_promotion_status',
+        'H Local': 'h_local'
+    }
+
+    row = {mapping[k]: row[k] for k in row.keys()}
+
+    params = urllib.parse.urlencode(row)
+
+
+
+    return f"{base_url}?{params}"
+
+
 
 
 if __name__ == '__main__':
-    data = pd.read_csv("Dataset/Training/Features_Variant_5.csv") 
-    X = data.iloc[:,:-1]
-    y = data.iloc[:,-1:]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=10)
-    model = LinearRegression()
-    model.fit(X_train, y_train)
-    y_predicted = model.predict(X_test)
-    rms = sqrt(mean_squared_error(y_test, y_predicted))
-    print(rms)
+    # Load the model and preprocessor
+    with open('model.pkl', 'rb') as f:
+        model = pickle.load(f)
+
+    with open('preprocessor.pkl', 'rb') as f:
+        preprocessor = pickle.load(f)
+
+    
+    # Load the dataset
+    df = pd.read_csv('Dataset/Testing/TestSet/Test_Case_5.csv')
+
+    # Define column names
+    columns = [
+        'Page Popularity/likes', 'Page Checkins', 'Page talking about', 'Page Category',
+        'Derived_5', 'Derived_6', 'Derived_7', 'Derived_8', 'Derived_9', 'Derived_10',
+        'Derived_11', 'Derived_12', 'Derived_13', 'Derived_14', 'Derived_15', 'Derived_16',
+        'Derived_17', 'Derived_18', 'Derived_19', 'Derived_20', 'Derived_21', 'Derived_22',
+        'Derived_23', 'Derived_24', 'Derived_25', 'Derived_26', 'Derived_27', 'Derived_28','Derived_29',
+        'CC1', 'CC2', 'CC3', 'CC4', 'CC5', 'Base time', 'Post length', 'Post Share Count',
+        'Post Promotion Status', 'H Local', 'Post published weekday_1', 'Post published weekday_2',
+        'Post published weekday_3', 'Post published weekday_4', 'Post published weekday_5',
+        'Post published weekday_6', 'Post published weekday_7', 'Base DateTime weekday_1',
+        'Base DateTime weekday_2', 'Base DateTime weekday_3', 'Base DateTime weekday_4',
+        'Base DateTime weekday_5', 'Base DateTime weekday_6', 'Base DateTime weekday_7',
+        'Target Variable'
+    ]
+
+    # Rename columns
+    df.columns = columns
+
+    for row in df.sample(10).to_dict(orient="records"):
+        target = row["Target Variable"]
+        del row["Target Variable"]
+        print(generate_prediction_url(row))
+        print(f"Actual: {target}")
+        print()
 
     app.run(debug=True)
     
