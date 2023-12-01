@@ -10,19 +10,19 @@ https://archive.ics.uci.edu/dataset/363/facebook+comment+volume+dataset
 ## Dataset Description
 
 ### Features
-1. **Page Popularity/Likes:** Defines the popularity or support for the source of the document.
-2. **Page Checkins:** Describes how many individuals have visited the place associated with the page.
-3. **Page Talking About:** Defines the daily interest of individuals towards the source of the document/post.
-4. **Page Category:** Defines the category of the source of the document, such as place, institution, brand, etc.
-5-29. **Derived Features:** Aggregated features calculated by page, including min, max, average, median, and standard deviation of essential features.
-30-34. **CC1 to CC5:** Essential features representing the number of comments at different time intervals.
-35. **Base Time:** Selected time to simulate the scenario.
-36. **Post Length:** Character count in the post.
-37. **Post Share Count:** Counts the number of shares the post received.
-38. **Post Promotion Status:** Binary encoding indicating whether the post is promoted (1) or not (0).
-39. **H Local:** Describes the hours for which we have the target variable/comments received.
-40-46. **Post Published Weekday:** Binary encoding for the day (Sunday...Saturday) on which the post was published.
-47-53. **Base DateTime Weekday:** Binary encoding for the day (Sunday...Saturday) on the selected base Date/Time.
+1\. **Page Popularity/Likes:** Defines the popularity or support for the source of the document.  
+2\. **Page Checkins:** Describes how many individuals have visited the place associated with the page.  
+3\. **Page Talking About:** Defines the daily interest of individuals towards the source of the document/post.  
+4\. **Page Category:** Defines the category of the source of the document, such as place, institution, brand, etc.  
+5-29\. **Derived Features:** Aggregated features calculated by page, including min, max, average, median, and standard deviation of essential features.  
+30-34\. **CC1 to CC5:** Essential features representing the number of comments at different time intervals.  
+35\. **Base Time:** Selected time to simulate the scenario.  
+36\. **Post Length:** Character count in the post.  
+37\. **Post Share Count:** Counts the number of shares the post received.  
+38\. **Post Promotion Status:** Binary encoding indicating whether the post is promoted (1) or not (0).  
+39\. **H Local:** Describes the hours for which we have the target variable/comments received.  
+40-46\. **Post Published Weekday:** Binary encoding for the day (Sunday...Saturday) on which the post was published.  
+47-53\. **Base DateTime Weekday:** Binary encoding for the day (Sunday...Saturday) on the selected base Date/Time.  
 
 ### Target Variable
 - **Target Variable:** The number of comments in the next H hours (H is given in Feature no 39).
